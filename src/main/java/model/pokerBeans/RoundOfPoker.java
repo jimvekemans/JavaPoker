@@ -1,4 +1,4 @@
-package pokerBeans;
+package model.pokerBeans;
 
 import java.util.Collections;
 import java.util.LinkedList;

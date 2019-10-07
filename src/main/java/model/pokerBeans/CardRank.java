@@ -1,4 +1,4 @@
-package pokerBeans;
+package model.pokerBeans;
 
 public enum CardRank {
     TWO("Two", 2),

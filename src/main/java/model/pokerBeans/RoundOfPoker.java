@@ -1,11 +1,10 @@
 package model.pokerBeans;
 
 import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Stack;
 
-public class RoundOfPoker {
+public class RoundOfPoker implements Subject{
     private List<Player> players;
     private Stack<Card> deckOfCards;
 
@@ -27,17 +26,21 @@ public class RoundOfPoker {
         return deckOfCards;
     }
 
-}
-
-class Player {
-    LinkedList<Card> cardsInHand;
-
-    Player(Card first, Card second) {
-        cardsInHand.add(first);
-        cardsInHand.add(second);
+    public Player addPlayerToRound(Player player) {
+        return null;
     }
 
-    public List<Card> getCardsInHand() {
-        return cardsInHand;
+    public boolean removePlayerFromRound(Player player) {
+        return false;
+    }
+
+    @Override
+    public void notifyStartOfTurn() {
+
+    }
+
+    @Override
+    public void notifyEndOfRound() {
+
     }
 }

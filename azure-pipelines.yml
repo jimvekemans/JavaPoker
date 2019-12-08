@@ -1,0 +1,77 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+
+# at the top of your YAML file
+# set some variables that you'll need when you deploy
+variables:
+  # the name of the service connection that you created above
+  serviceConnectionToAzure: connection-to-pokerbeans-rg
+  # the name of your web app here is the same one you used above
+  # when you created the web app using the Azure CLI
+  appName: pokerbeans
+
+# ...
+
+trigger:
+  - master
+  - releases/*
+
+strategy:
+  matrix:
+    linux:
+      imageName: "ubuntu-16.04"
+    mac:
+      imageName: "macos-10.13"
+    windows:
+      imageName: "vs2017-win2016"
+  maxParallel: 3
+
+pool:
+  vmImage: $(imageName)
+
+steps:
+  - script: echo Hello, world!
+    displayName: 'Run a one-line script'
+
+  - script: |
+      echo Add other tasks to build, test, and deploy your project.
+      echo See https://aka.ms/yaml
+    displayName: 'Run a multi-line script'
+
+  - task: Maven@3
+    inputs:
+      mavenPomFile: 'pom.xml'
+      mavenOptions: '-Xmx3072m'
+      javaHomeOption: 'JDKVersion'
+      jdkVersionOption: '1.11'
+      jdkArchitectureOption: 'x64'
+      publishJUnitResults: false
+      testResultsFiles: '**/TEST-*.xml'
+      goals: 'package'
+
+
+  # ...
+  # add these as the last steps
+  # to deploy to your app service
+  - task: CopyFiles@2
+    displayName: Copy Files
+    inputs:
+      SourceFolder: $(system.defaultworkingdirectory)/target/azure-functions/
+      Contents: '**'
+      TargetFolder: $(build.artifactstagingdirectory)
+
+  - task: PublishBuildArtifacts@1
+    displayName: Publish Artifact
+    inputs:
+      PathtoPublish: $(build.artifactstagingdirectory)
+
+  - task: AzureFunctionApp@1
+    displayName: Azure Function App deploy
+    inputs:
+      azureSubscription: $(serviceConnectionToAzure)
+      appType: functionApp
+      appName: $(appName)
+      package: $(build.artifactstagingdirectory)/javafunctions
